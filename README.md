@@ -1,5 +1,7 @@
 # DnD-5e-ncurses
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE) [![Python: 3.8+](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
+
 Description
 -----------
 DnD-5e-ncurses est un petit jeu en console utilisant ncurses (interface textuelle) où le joueur dirige un héros dans des donjons avec des rencontres aléatoires. Le jeu propose un menu principal, un château (shop) pour acheter/vendre équipements, un inventaire avec gestion d'armes/armures/potions et un système de sauvegarde automatique en JSON.
@@ -79,6 +81,8 @@ R: Confirmer que la fonction d'achat appelle bien `player.inventory.append(obj)`
 
 Contributions / Roadmap
 -----------------------
+Pour contribuer : lisez le fichier [CONTRIBUTING.md](CONTRIBUTING.md).
+
 - Ajouter UI pour afficher les détails d'un objet (statistiques).
 - Étendre le loot (or, plusieurs types de potions, objets rares).
 - Ajouter tests unitaires pour la logique d'équipement, shop et sauvegarde.
@@ -86,4 +90,3 @@ Contributions / Roadmap
 Licence
 -------
 Par défaut pas de licence spécifiée — ajoutez `LICENSE` si vous souhaitez une licence (p.ex. MIT).
-
