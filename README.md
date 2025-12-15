@@ -25,7 +25,7 @@ Gameplay
 - Mort du héros : si le joueur meurt, afficher un écran proposant de recommencer (réinitialiser état joueur) ou quitter le jeu.
 - Fin de combat : le joueur peut retourner au Château via le menu de résultat.
 - Château (shop) : panneau d'achat/vente d'armes et d'armures avec l'or gagné. Les achats et ventes sauvegardent immédiatement l'état du joueur.
-- Inventaire : contient armes, armures et potions (pour l'instant seules les potions sont stockées mais l'architecture supporte armes/armures). Permet de boire une potion pour récupérer des PV.
+- Inventaire : contient armes, armures et potions. Permet de boire une potion pour récupérer des PV.
 
 Contrôles et raccourcis
 -----------------------
@@ -43,8 +43,8 @@ Système d'équipement et inventaire
   - Touche `e` : équipe ou déséquipe l'arme/armure sélectionnée. Seule l'instance sélectionnée change d'état (éviter d'équiper/déséquiper en masse pour plusieurs objets identiques).
   - Touche `p` : boire une potion (consomme la potion et restaure des PV).
 - Attributs du joueur :
-  - `damage` : calculé comme base (2 si aucune arme équipée) + bonus de l'arme équipée.
-  - `armor`  : calculé comme base (10 si aucune armure équipée) + bonus de l'armure équipée.
+  - `damage` : calculé comme base (2 si aucune arme équipée ou points de dommage de l'arme équipée).
+  - `armor_class`  : calculé comme base (10 si aucune armure équipée ou valeur de l'armure équipée).
 - Lorsqu'il y a plusieurs objets du même type (même nom/valeur), chaque objet doit avoir un identifiant unique interne (ou index) pour être distingué lors de l'équipement/déséquipement.
 
 Magasin (Castle)
@@ -52,7 +52,6 @@ Magasin (Castle)
 - Achat : sélectionner arme/armure disponible et l'acheter si vous avez assez d'or ; l'objet doit être ajouté à l'inventaire du joueur et l'or retiré.
 - Vente : sélectionner un objet dans l'inventaire et le vendre contre de l'or (prix déterminé par l'objet).
 - Sauvegarde : l'achat et la vente écrivent immédiatement la sauvegarde (`save_player.json`).
-- Bug connu : dans l'implémentation actuelle, il est rapporté que les objets achetés ne s'ajoutent pas à l'inventaire — le comportement attendu est qu'ils apparaissent immédiatement dans l'inventaire et puissent être équipés. Vérifier que l'objet acheté est bien appendé à la liste d'inventaire et que la sauvegarde est déclenchée après l'opération.
 
 Sauvegarde
 ----------
@@ -76,8 +75,9 @@ Lancer le jeu
 
 FAQ / Erreurs connues
 ---------------------
-Q: Les armes/armures achetées n'apparaissent pas dans l'inventaire.
-R: Confirmer que la fonction d'achat appelle bien `player.inventory.append(obj)` et sauvegarde. Vérifier aussi que l'inventaire utilisé par le château et par l'écran d'inventaire référence la même instance `player`.
+
+    Q: Les armes/armures achetées n'apparaissent pas dans l'inventaire. 
+    R: Confirmer que la fonction d'achat appelle bien `player.inventory.append(obj)` et sauvegarde. Vérifier aussi que l'inventaire utilisé par le château et par l'écran d'inventaire référence la même instance `player`.
 
 Contributions / Roadmap
 -----------------------
