@@ -112,8 +112,9 @@ class CursesUI:
 			for i, w in enumerate(self.hero.weapons):
 				idx = start_idx + i
 				marker = '>' if self.inventory_cursor == idx else ' '
-				equip_mark = '(E)' if self.hero.equipped_weapon == w else '   '
-				self.stdscr.addstr(wep_start + 1 + i, 2, f"{marker} {w.name} {equip_mark} (DMG+{w.damage})")
+				equip_mark = '(E)' if self.hero.equipped_weapon is w else '   '
+				self.push_panel(str(w))
+				self.stdscr.addstr(wep_start + 1 + i, 2, f"{marker} {w.name} {equip_mark} (DMG+{w.damage}) {id(w)}")
 			wep_count = len(self.hero.weapons)
 
 			# Armors
@@ -122,7 +123,7 @@ class CursesUI:
 			for j, a in enumerate(self.hero.armors):
 				idx = start_idx + wep_count + j
 				marker = '>' if self.inventory_cursor == idx else ' '
-				equip_mark = '(E)' if self.hero.equipped_armor == a else '   '
+				equip_mark = '(E)' if self.hero.equipped_armor is a else '   '
 				self.stdscr.addstr(arm_start + 1 + j, 2, f"{marker} {a.name} {equip_mark} (ARM {a.value})")
 			arm_count = len(self.hero.armors)
 
