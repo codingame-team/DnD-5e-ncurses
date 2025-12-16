@@ -113,7 +113,6 @@ class CursesUI:
 				idx = start_idx + i
 				marker = '>' if self.inventory_cursor == idx else ' '
 				equip_mark = '(E)' if self.hero.equipped_weapon is w else '   '
-				self.push_panel(str(w))
 				self.stdscr.addstr(wep_start + 1 + i, 2, f"{marker} {w.name} {equip_mark} (DMG+{w.damage}) {id(w)}")
 			wep_count = len(self.hero.weapons)
 
@@ -228,13 +227,16 @@ class CursesUI:
 			self.stdscr.addstr(5, 0, "Weapons:")
 			for i, w in enumerate(self.hero.weapons):
 				marker = '>' if self.sell_cursor == i else ' '
-				self.stdscr.addstr(6 + i, 0, f"{marker} {w.name} (DMG+{w.damage}) sell:{w.cost//2}")
+				equip_mark = '(E)' if self.hero.equipped_weapon is w else '   '
+				self.stdscr.addstr(6 + i, 0, f"{marker} {w.name} {equip_mark} (DMG+{w.damage}) sell:{w.cost//2}")
 			base = 10 + len(self.hero.weapons) + 2
 			self.stdscr.addstr(base, 0, "Armors:")
 			# weapons then armors: mark selected by sell_cursor (combined index)
 			for j, a in enumerate(self.hero.armors):
 				marker = '>' if self.sell_cursor == (len(self.hero.weapons) + j) else ' '
-				self.stdscr.addstr(base + 1 + j, 0, f"{marker} {a.name} (ARM {a.value}) sell:{a.cost // 2}")
+				equip_mark = '(E)' if self.hero.equipped_armor is a else '   '
+				self.stdscr.addstr(base + 1 + j, 0, f"{marker} {a.name} {equip_mark} (ARM {a.value}) sell:{a.cost // 2}")
+
 			# Special line for pushed messages
 			self.stdscr.addstr(lines-3, 0, self.get_panel_message())
 			self.stdscr.addstr(lines-2, 0, "Enter to sell — Esc to return to Castle menu", curses.A_BOLD)
@@ -468,6 +470,10 @@ class CursesUI:
 	def _sell_item(self) -> None:
 		"""Sell selected item."""
 		if self.sell_cursor < len(self.hero.weapons):
+			w = self.hero.weapons[self.sell_cursor]
+			if self.hero.equipped_weapon is w:
+				self.push_panel("Cannot sell equipped weapon. Unequip it first.")
+				return
 			val = self.hero.sell_weapon(self.sell_cursor)
 			if val:
 				self.push_panel(f"Sold weapon for {val} gold.")
@@ -479,6 +485,10 @@ class CursesUI:
 				self.push_panel("Nothing to sell.")
 		else:
 			idx = self.sell_cursor - len(self.hero.weapons)
+			a = self.hero.armors[idx]
+			if self.hero.equipped_armor is a:
+				self.push_panel("Cannot sell equipped armor. Unequip it first.")
+				return
 			val = self.hero.sell_armor(idx)
 			if val:
 				self.push_panel(f"Sold armor for {val} gold.")
@@ -575,7 +585,7 @@ class CursesUI:
 				self.mode = 'combat'
 				self.animate_encounter(f"!! {monster.name.upper()} ENCOUNTER !!")
 		elif c == ord('h'):
-			self.push_exploration("Controls: w-wander, q-quit, h-help")
+			self.push_exploration("Controls: w-wander, i-inventory, m-menu, h-help")
 		elif c == ord('i'):
 			self.open_inventory()
 		elif c == ord('m'):
@@ -621,7 +631,6 @@ class CursesUI:
 		if gold > 0:
 			self.hero.add_gold(gold)
 			self.push_exploration(f"You gained {gold} gold.")
-			self.push_exploration("Open the main menu with 'm' to return to the Castle.")
 
 		self.mode = 'explore'
 		self.current_monster = None
